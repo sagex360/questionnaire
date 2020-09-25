@@ -1,0 +1,67 @@
+<?php
+
+namespace App\EventListener\Kernel;
+
+use App\Exception\ValidationHttpException;
+use FOS\RestBundle\FOSRestBundle;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Event\ExceptionEvent;
+use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\Validator\ConstraintViolationListInterface;
+
+class KernelExceptionListener
+{
+    public function onKernelException(ExceptionEvent $event)
+    {
+        $request = $event->getRequest();
+        if (!$request->attributes->get(FOSRestBundle::ZONE_ATTRIBUTE, true)) {
+            return;
+        }
+
+        if ($this->isApiRequest($event->getRequest())) {
+            $this->handleException($event, $event->getThrowable());
+        }
+    }
+
+    protected function isApiRequest(Request $request)
+    {
+        return 'application/json' === $request->headers->get('Content-Type')
+            || 0 === strpos($request->getPathInfo(), '/api/');
+    }
+
+    protected function handleException(ExceptionEvent $event, \Throwable $exception)
+    {
+        if ($exception instanceof HttpException) {
+            switch (true) {
+                case $exception instanceof ValidationHttpException:
+                    $message = $this->formatValidationErrors($exception->getErrors());
+                    break;
+            }
+
+            $event->setResponse(new JsonResponse(['errors' => $message], $exception->getStatusCode()));
+        }
+    }
+
+    private function formatValidationErrors(ConstraintViolationListInterface $violations): array
+    {
+        $errors = [];
+
+        foreach ($violations as $violation) {
+            if ($constraint = $violation->getConstraint()) {
+                $message = $constraint->getErrorName($violation->getCode());
+            } else {
+                $message = $violation->getMessage();
+            }
+
+            $propertyPath = $violation->getPropertyPath();
+            if ('[' === mb_substr($propertyPath, 0, 1) && ']' === mb_substr($propertyPath, -1, 1)) {
+                $propertyPath = trim($propertyPath, '[]');
+            }
+
+            $errors[$propertyPath] = $message;
+        }
+
+        return $errors;
+    }
+}

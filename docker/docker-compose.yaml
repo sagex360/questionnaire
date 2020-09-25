@@ -40,3 +40,16 @@ services:
             - php-fpm
         ports:
             - "8090:80"
+
+    rabbitmq:
+        image: rabbitmq:3.8.9-alpine
+#        working_dir: /app
+#        hostname: rabbit-mq
+#        container_name: 'rabbit-mq'
+        ports:
+            - '15672:15672'
+            - '5672:5672'
+        environment:
+            RABBITMQ_DEFAULT_USER: user
+            RABBITMQ_DEFAULT_PASS: password
+            RABBITMQ_DEFAULT_VHOST: my_vhost
