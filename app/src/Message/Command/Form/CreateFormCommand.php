@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Message\Form;
+namespace App\Message\Command\Form;
 
 use App\Dto\Form\FormDto;
-use App\Message\AsyncCommandInterface;
+use App\Message\AsyncMessageInterface;
 use App\Message\ValidatableCommandInterface;
 
-class CreateFormCommand implements ValidatableCommandInterface, AsyncCommandInterface
+class CreateFormCommand implements ValidatableCommandInterface, AsyncMessageInterface
 {
     /**
      * @var string

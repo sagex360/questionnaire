@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use App\Enum\SerializationGroupEnum;
+use Symfony\Component\Serializer\Annotation as Serializer;
 
 /**
  * @ORM\Entity
@@ -12,6 +14,11 @@ class FormQuestion
     /**
      * @ORM\Id()
      * @ORM\Column(type="guid", unique=true)
+     *
+     * @Serializer\Groups({
+     *     SerializationGroupEnum::VIEW,
+     *     SerializationGroupEnum::SECURE_VIEW,
+     * })
      */
     private string $id;
 
@@ -19,6 +26,11 @@ class FormQuestion
      * @var string
      *
      * @ORM\Column(type="string", length=255)
+     *
+     * @Serializer\Groups({
+     *     SerializationGroupEnum::VIEW,
+     *     SerializationGroupEnum::SECURE_VIEW,
+     * })
      */
     private string $question;
 

@@ -6,6 +6,8 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\Doctrine\FormRepository;
+use App\Enum\SerializationGroupEnum;
+use Symfony\Component\Serializer\Annotation as Serializer;
 
 /**
  * @ORM\Entity(repositoryClass=FormRepository::class)
@@ -15,6 +17,12 @@ class Form
     /**
      * @ORM\Id
      * @ORM\Column(type="guid", unique=true)
+     *
+     * @Serializer\Groups({
+     *     SerializationGroupEnum::LIST,
+     *     SerializationGroupEnum::VIEW,
+     *     SerializationGroupEnum::SECURE_VIEW,
+     * })
      */
     private string $id;
 
@@ -22,6 +30,12 @@ class Form
      * @var string
      *
      * @ORM\Column(type="string", length=255, unique=true)
+     *
+     * @Serializer\Groups({
+     *     SerializationGroupEnum::LIST,
+     *     SerializationGroupEnum::VIEW,
+     *     SerializationGroupEnum::SECURE_VIEW,
+     * })
      */
     private string $name;
 
@@ -29,8 +43,24 @@ class Form
      * @var Collection<FormQuestion>
      *
      * @ORM\OneToMany(targetEntity=FormQuestion::class, mappedBy="form", cascade={"persist"})
+     *
+     * @Serializer\Groups({
+     *     SerializationGroupEnum::VIEW,
+     *     SerializationGroupEnum::SECURE_VIEW,
+     * })
      */
     private Collection $questions;
+
+    /**
+     * @var Collection<FormResponse>
+     *
+     * @ORM\OneToMany(targetEntity=FormResponse::class, mappedBy="form")
+     *
+     * @Serializer\Groups({
+     *     SerializationGroupEnum::SECURE_VIEW,
+     * })
+     */
+    private Collection $responses;
 
     public function __construct(string $id, string $name)
     {
@@ -38,6 +68,7 @@ class Form
         $this->name = $name;
 
         $this->questions = new ArrayCollection();
+        $this->responses = new ArrayCollection();
     }
 
     public function getId(): string
@@ -74,5 +105,13 @@ class Form
         }
 
         return $question;
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getResponses(): Collection
+    {
+        return $this->responses;
     }
 }

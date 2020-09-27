@@ -3,11 +3,17 @@
 namespace App\Dto\Form;
 
 use Symfony\Component\Validator\Constraints as Assert;
-use OpenApi\Annotations as OA;
+use App\Validator\Constraints as AppAssert;
+use App\Entity\Form;
 
+/**
+ * @AppAssert\UniqueDto(fields={"name"}, mapToEntityClass=Form::class)
+ */
 class FormDto
 {
     /**
+     * @var string
+     *
      * @Assert\Type(type="string")
      * @Assert\NotBlank
      * @Assert\Length(max="255")

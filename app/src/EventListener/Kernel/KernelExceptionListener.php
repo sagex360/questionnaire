@@ -37,9 +37,17 @@ class KernelExceptionListener
                 case $exception instanceof ValidationHttpException:
                     $message = $this->formatValidationErrors($exception->getErrors());
                     break;
+                default:
+                    $message = ['_system' => str_replace(' ', '_', mb_strtoupper($exception->getMessage()))];
+                    break;
             }
 
             $event->setResponse(new JsonResponse(['errors' => $message], $exception->getStatusCode()));
+        } elseif ($exception instanceof \RuntimeException) {
+            $event->setResponse(new JsonResponse(
+                ['errors' => ['_system' => str_replace(' ', '_', mb_strtoupper($exception->getMessage()))]],
+                $exception->getCode() ?: 500,
+            ));
         }
     }
 

@@ -1,12 +1,11 @@
 <?php
 
-namespace App\Message\Form;
+namespace App\Message\Query\Form;
 
-use App\Factory\Entity\FormFactory;
 use App\Repository\Doctrine\FormRepository;
 use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
 
-class CreateFormCommandHandler implements MessageHandlerInterface
+class FindFormsQueryHandler implements MessageHandlerInterface
 {
     /**
      * @var FormRepository
@@ -18,10 +17,8 @@ class CreateFormCommandHandler implements MessageHandlerInterface
         $this->repository = $repository;
     }
 
-    public function __invoke(CreateFormCommand $command)
+    public function __invoke(FindFormsQuery $query)
     {
-        $form = FormFactory::createFromFormDto($command->getId(), $command->getData());
-
-        $this->repository->save($form);
+        return $this->repository->findBy([], [], $query->getLimit(), $query->getOffset());
     }
 }
