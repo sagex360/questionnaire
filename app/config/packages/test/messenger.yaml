@@ -1,0 +1,21 @@
+framework:
+    messenger:
+        # Uncomment this (and the failed transport below) to send failed messages to this transport for later handling.
+        # failure_transport: failed
+        transports:
+             async: 'in-memory://'
+             sync: 'sync://'
+            # failed: 'doctrine://default?queue_name=failed'
+
+        routing:
+            'App\Message\AsyncMessageInterface': async
+            'App\Message\SyncMessageInterface': sync
+
+        default_bus: messenger.bus.command
+        buses:
+            messenger.bus.query: ~
+            messenger.bus.command:
+                middleware:
+                    - messenger.middleware.validation
+                    - 'App\Message\Middleware\ValidationMiddleware'
+                    - doctrine_transaction

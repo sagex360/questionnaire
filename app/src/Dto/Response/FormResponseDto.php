@@ -10,6 +10,8 @@ use App\Validator\Constraints as AppAssert;
 class FormResponseDto
 {
     /**
+     * @var string|null
+     *
      * @ConvertUuidToEntity(class=Form::class)
      *
      * @Assert\NotBlank
@@ -23,6 +25,7 @@ class FormResponseDto
      *
      * @Assert\Type(type="array")
      * @Assert\NotBlank
+     * @Assert\Valid
      */
     private $answers;
 

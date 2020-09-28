@@ -10,6 +10,8 @@ use App\Validator\Constraints as AppAssert;
 class AnswerDto
 {
     /**
+     * @var string|null
+     *
      * @ConvertUuidToEntity(class=FormQuestion::class)
      *
      * @Assert\NotBlank
@@ -19,6 +21,8 @@ class AnswerDto
     private $question;
 
     /**
+     * @var string|null
+     *
      * @Assert\NotBlank
      * @Assert\Type(type="string")
      * @Assert\Length(max="255")

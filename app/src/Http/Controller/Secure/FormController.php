@@ -48,6 +48,15 @@ class FormController extends AbstractFOSRestController
      * @Rest\QueryParam(name=HttpMetaKeyEnum::LIMIT, requirements="\d+", strict=true, default=15)
      * @Rest\QueryParam(name=HttpMetaKeyEnum::OFFSET, requirements="\d+", nullable=true, default=0, strict=true)
      *
+     * @OA\Response(
+     *     response=200,
+     *     description="",
+     *     @OA\JsonContent(
+     *        type="array",
+     *        @OA\Items(ref=@Model(type=Form::class, groups={SerializationGroupEnum::LIST}))
+     *     )
+     * )
+     *
      * @Rest\View(serializerGroups={SerializationGroupEnum::LIST})
      *
      * @param ParamFetcherInterface $paramFetcher
@@ -64,6 +73,12 @@ class FormController extends AbstractFOSRestController
     /**
      * @Rest\Get(path="/{id}")
      *
+     * @OA\Response(
+     *     response=200,
+     *     description="",
+     *     @Model(type=Form::class, groups={SerializationGroupEnum::SECURE_VIEW})
+     * )
+     *
      * @Rest\View(serializerGroups={SerializationGroupEnum::SECURE_VIEW})
      *
      * @param Form $form
@@ -77,6 +92,16 @@ class FormController extends AbstractFOSRestController
     /**
      * @Rest\Get(path="/statistics/ratio")
      *
+     * @OA\Response(
+     *     response=200,
+     *     description="",
+     *     @OA\JsonContent(
+     *        type="object",
+     *        @OA\Property(property="withResponse", type="number"),
+     *        @OA\Property(property="withNoResponse", type="number"),
+     *     )
+     * )
+     *
      * @Rest\View
      */
     public function getFormRatioAction()
@@ -89,6 +114,19 @@ class FormController extends AbstractFOSRestController
 
     /**
      * @Rest\Get(path="/statistics/response-count")
+     *
+     * @OA\Response(
+     *     response=200,
+     *     description="",
+     *     @OA\JsonContent(
+     *        type="array",
+     *        @OA\Items(
+     *            @OA\Property(property="id", type="string"),
+     *            @OA\Property(property="name", type="string"),
+     *            @OA\Property(property="responseCount", type="number"),
+     *        )
+     *     )
+     * )
      *
      * @Rest\View
      */

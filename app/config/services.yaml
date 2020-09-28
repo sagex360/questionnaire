@@ -4,6 +4,7 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
+    app_token: '%env(API_TOKEN)%'
 
 services:
     # default configuration for services in *this* file
@@ -40,6 +41,6 @@ services:
 
     App\EventListener\Kernel\TokenAuthenticator:
         arguments:
-            $token: '%env(API_TOKEN)%'
+            $token: '%app_token%'
         tags:
             - { name: kernel.event_listener, event: kernel.request}

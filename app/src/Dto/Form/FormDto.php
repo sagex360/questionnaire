@@ -25,6 +25,7 @@ class FormDto
      *
      * @Assert\Type(type="array")
      * @Assert\NotBlank
+     * @Assert\Valid
      */
     private $questions;
 

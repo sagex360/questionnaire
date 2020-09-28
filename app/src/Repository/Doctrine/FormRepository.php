@@ -24,7 +24,7 @@ class FormRepository extends AbstractBaseRepository
      */
     public function getFormRatio()
     {
-        return $this->_em->createQueryBuilder()
+        $result = $this->_em->createQueryBuilder()
             ->select(sprintf('(%s)', $this->createFormCountQueryBuilder('f1', true)->getDQL()) . ' as withResponse')
             ->addSelect(sprintf('(%s)', $this->createFormCountQueryBuilder('f2', false)->getDQL()) . ' as withNoResponse')
             ->from(Form::class, 'f')
@@ -32,6 +32,8 @@ class FormRepository extends AbstractBaseRepository
             ->setMaxResults(1)
             ->getScalarResult()
         ;
+
+        return $result[0] ?? [];
     }
 
     /**
