@@ -14,6 +14,9 @@ framework:
         default_bus: messenger.bus.command
         buses:
             messenger.bus.query: ~
+            messenger.bus.event:
+                default_middleware: allow_no_handlers
+
             messenger.bus.command:
                 middleware:
                     - messenger.middleware.validation

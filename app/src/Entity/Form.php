@@ -2,6 +2,9 @@
 
 namespace App\Entity;
 
+use App\Event\ObjectEvent\RaiseEventsInterface;
+use App\Event\ObjectEvent\RaiseEventsTrait;
+use App\Message\Event\Form\FormCreatedEvent;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -12,8 +15,10 @@ use Symfony\Component\Serializer\Annotation as Serializer;
 /**
  * @ORM\Entity(repositoryClass=FormRepository::class)
  */
-class Form
+class Form implements RaiseEventsInterface
 {
+    use RaiseEventsTrait;
+
     /**
      * @ORM\Id
      * @ORM\Column(type="guid", unique=true)
@@ -69,6 +74,8 @@ class Form
 
         $this->questions = new ArrayCollection();
         $this->responses = new ArrayCollection();
+
+        $this->raise(new FormCreatedEvent($this));
     }
 
     public function getId(): string
